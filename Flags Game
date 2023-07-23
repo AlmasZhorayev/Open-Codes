@@ -1,0 +1,466 @@
+'''
+Author: Almas Zhorayev
+Creation Date: 3/13/23
+Last Modified: 3/22/23
+Project Discription: 
+My project is a game, where you have to click on correct flags that were asked.
+You can choose between 3 level: easy,medium,and hard. At the end your accuracy 
+will be calculated, which shows how precide you were in your answers.
+Instructions: 
+Click 's' to start the game. Choose between 3 levels, and make sure to enter it
+exactly the same as it is on the screen. Otherwise, it will ask you to enter 
+the level again. You will see a label with a random country's name - you have
+to click on that country. 
+Credits: Ishan Palapra, Connor Le
+Updates: Ishan gave me the idea to use the while loop to check if user correctly
+enters the level. It will help the user, if he will not get the point from the
+first try. Before I didn't really know how to use the while loop.Connor helped 
+me with drawing flags, using some different shapes. For example, he suggested to 
+use for loop to create stars in the US flag
+Rubric Item:
+String List: 184
+app.getTextInput: 280
+String Helper Variable: 291
+append(): 294
+Function Return: 215
+For Loop: 368
+While Loop: 278
+'''
+
+# globals/app.properties
+app.stepsPerSecond = 1
+app.counter = 0
+
+# objects
+difficultyLevel = Label('',75,350,size = 16,visible = False)
+accuracy = Label('Accuracy:',275,350,size = 16,visible = False)
+instructions = Label("Press 's' to start the game",200,200)
+easy = Label('',200,120,size = 23,visible = False)
+medium = Label('',200,120,size = 23,visible = False)
+hard  = Label('',200,120,size = 23,visible = False)
+
+# object properties/methods
+accuracy.correctAnsCounter = 0
+accuracy.incorrectAnsCounter = 0
+
+# groups
+SouthKorea = Group(
+    Rect(150,170,100,60,fill = 'white',border = 'black',borderWidth = 1),
+    Arc(200,200,30,30,0,180,fill='red'),
+    Arc(200,200,30,30,180,180,fill = 'blue'),
+    Arc(200,195,26,20,270,90,fill = 'red'),
+    Arc(200,205,26,20,90,90,fill = 'blue'),
+    Circle(194.7,194.7,7.5,fill='red'),
+    Circle(205.3,205.3,7.5,fill='blue'),
+    Line(168,190,176,179),
+    Line(171,192,179,181),
+    Line(174,194,182,183),
+    Line(232,190,224,179,dashes = (5.8 , 2)),
+    Line(229,192,221,181),
+    Line(226,194,218,183,dashes = (5.8 , 2)),
+    Line(168,210,176,221),
+    Line(171,208,179,219,dashes = (5.8 , 2)),
+    Line(174,206,182,217),
+    Line(232,210,224,221,dashes = (5.8 , 2)),
+    Line(229,208,221,219,dashes = (5.8 , 2)),
+    Line(226,206,218,217,dashes = (5.8 , 2))
+    )
+USA = Group(
+    Rect(150,170,100,60,fill = None,border = 'black',borderWidth = 1)
+    )
+Russia = Group(
+    Rect(150,170,100,60,fill = 'white',border = 'black',borderWidth = 1),
+    Rect(151,190,98,20,fill = 'blue'),
+    Rect(151,210,98,20,fill = 'red'),
+    )
+
+Japan = Group(
+    Rect(0,0,100,60,fill = 'white',border = 'black',borderWidth = 1),
+    Circle(50,30,15,fill = 'red')
+    )
+Ukraine = Group(
+    Rect(80,250,100,60,fill = 'blue',border = 'black',borderWidth = 1),
+    Rect(81,280,98,29,fill = 'yellow')
+    )
+Brazil = Group(
+    Rect(270,250,100,60,fill = 'forestgreen',border = 'black',borderWidth = 1),
+    Polygon(282,280,320,258,358,280,320,302,fill = 'gold'),
+    Circle(320,280,14,fill = 'lightseagreen'),
+    Line(306.325,277,322,278.5,fill = 'white'),
+    Line(322,278.5,333.675,283,fill = 'white')
+    )
+Denmark = Group(
+    Rect(0,170,100,60,fill = rgb(210,34,53),border = 'black',borderWidth = 1),
+    Line(40,171,40,229,fill = 'white',lineWidth = 10),
+    Line(1,200,99,200,fill = 'white',lineWidth = 10)
+    )
+Finland = Group(
+    Rect(0,0,100,60,fill = None,border = 'black',borderWidth = 1),
+    Line(40,0,40,59,fill = 'midnightBlue',lineWidth = 15),
+    Line(1,30,99,30,fill = 'midnightBlue',lineWidth = 15)
+    )
+Vietnam = Group(
+    Rect(0,170,100,60,fill = 'red',border = 'black',borderWidth = 1),
+    Star(50,200,19,5,fill = 'yellow')
+    )    
+Azerbaijan = Group(
+    Rect(150,170,100,60,fill = None,border = 'black',borderWidth = 1),
+    Rect(151,171,98,20,fill = 'deepskyblue'),
+    Rect(151,190,98,20,fill = 'red'),
+    Rect(151,210,98,19,fill = 'green'),
+    Circle(195,200,8,fill = 'white'),
+    Circle(197,200,6,fill = 'red'),
+    Star(206,200,5,8,fill = 'white',roundness = 50)
+    )
+Armenia = Group(
+     Rect(150,250,100,60,fill = 'red',border = 'black',borderWidth = 1),
+     Rect(151,270,98,20,fill = 'midnightBlue'),
+     Rect(151,290,98,19,fill = 'gold'),
+     )
+Austria = Group(
+    Rect(150,250,100,60,fill = rgb(255,65,60),border = 'black',borderWidth = 1),
+    Line(151,280,249,280,fill = 'white',lineWidth = 20)
+    )
+Bahamas = Group(
+    Rect(30,170,100,60,fill = 'darkcyan',border = 'black',borderWidth = 1),
+    Line(31,200,129,200,fill = 'gold', lineWidth = 19),
+    Polygon(30,170,30,230,75,200)
+     )
+Bangladesh = Group(
+    Rect(150,170,100,60,fill = 'seagreen',border = 'black',borderWidth = 1),
+    Circle(193,200,20,fill = 'tomato')
+    )
+BosniaAndHerzegovina = Group(
+    Rect(270,170,100,60,fill = 'darkblue',border = 'black',borderWidth = 1),
+    Polygon(290,170,355,170,355,230,fill = 'yellow')
+    )
+
+Micronesia = Group(
+    Rect(30,250,100,60,fill = 'skyblue',border = 'black',borderWidth = 1),
+    Star(80,265,7,5,fill = 'white'),
+    Star(80,295,7,5,fill = 'white',rotateAngle = 180),
+    Star(65,280,7,5,fill = 'white',rotateAngle = -20),
+    Star(95,280,7,5,fill = 'white',rotateAngle = 20)
+    )
+SaintLucia = Group(
+    Rect(150,250,100,60,fill = 'mediumturquoise',border = 'black',
+    borderWidth = 1),
+    Polygon(184,303,216,303,200,258,fill = 'white'),
+    Polygon(187,303,213,303,200,266),
+    Polygon(184,303,216,303,200,278,fill = 'gold')
+    )
+Togo = Group(
+    Rect(270,250,100,60,fill = 'forestgreen',border = 'black',borderWidth = 1),
+    Line(271,268,369,268,fill = 'yellow',lineWidth = 12),
+    Line(271,292,369,292,fill = 'yellow',lineWidth = 12),
+    Rect(271,251,36,35,fill = 'red'),
+    Star(289,269,10,5,fill = 'white')
+    )
+
+# group properties/methods
+SouthKorea.label = 'South Korea'
+Russia.label = 'Russia'
+USA.label = 'USA'
+Japan.label = 'Japan'
+Ukraine.label = 'Ukraine'
+Denmark.label = 'Denmark'
+Finland.label = 'Finland'
+Vietnam.label = 'Vietnam'
+Azerbaijan.label = 'Azerbaijan'
+Armenia.label = 'Armenia'
+Austria.label = 'Austria'
+Bahamas.label = 'Bahamas'
+Bangladesh.label = 'Bangladesh'
+BosniaAndHerzegovina.label = 'Bosnia and Herzegovina'
+Micronesia.label = 'Micronesia'
+SaintLucia.label = 'Saint Lucia'
+Togo.label = 'Togo'
+Brazil.label = 'Brazil'
+
+# lists
+easyCountries = ['USA','Russia','South Korea','Japan','Ukraine','Brazil']
+mediumCountries = ['Denmark','Finland','Vietnam','Azerbaijan','Armenia',
+'Austria']
+hardCountries = ['Bahamas','Bangladesh','Bosnia and Herzegovina',
+'Micronesia','Saint Lucia','Togo']
+level = ['Level',': ']
+
+# functions
+def moveFlagsAway():
+    ### moves every flag out of canvas, so they will not appear on the 
+    ### main screen
+    SouthKorea.centerX = 1000
+    USA.centerX = 1000
+    Russia.centerX = 1000
+    Japan.centerX = 1000
+    Ukraine.centerX = 1000
+    Denmark.centerX = 1000
+    Finland.centerX = 1000
+    Vietnam.centerX = 1000
+    Azerbaijan.centerX = 1000
+    Armenia.centerX = 1000
+    Austria.centerX = 1000
+    Bahamas.centerX = 1000
+    Bangladesh.centerX = 1000
+    BosniaAndHerzegovina.centerX = 1000
+    Micronesia.centerX = 1000
+    SaintLucia.centerX = 1000
+    Togo.centerX = 1000
+    Brazil.centerX = 1000
+
+def checkTheFlag(mouseX,mouseY):
+    ### Checks on which flag did you click, and returns the group name of that 
+    ### flag. Otherwise, returns 0
+    if(SouthKorea.contains(mouseX,mouseY)):
+        return SouthKorea
+    if(Russia.contains(mouseX,mouseY)):
+        return Russia
+    if(USA.contains(mouseX,mouseY)):
+        return USA
+    if(Japan.contains(mouseX,mouseY)):
+        return Japan
+    if(Ukraine.contains(mouseX,mouseY)):
+        return Ukraine
+    if(Brazil.contains(mouseX,mouseY)):
+        return Brazil
+    if(Denmark.contains(mouseX,mouseY)):
+        return Denmark
+    if(Finland.contains(mouseX,mouseY)):
+        return Finland
+    if(Vietnam.contains(mouseX,mouseY)):
+        return Vietnam
+    if(Azerbaijan.contains(mouseX,mouseY)):
+        return Azerbaijan
+    if(Armenia.contains(mouseX,mouseY)):
+        return Armenia
+    if(Austria.contains(mouseX,mouseY)):
+        return Austria
+    if(Bahamas.contains(mouseX,mouseY)):
+        return Bahamas
+    if(Bangladesh.contains(mouseX,mouseY)):
+        return Bangladesh
+    if(BosniaAndHerzegovina.contains(mouseX,mouseY)):
+        return BosniaAndHerzegovina
+    if(Micronesia.contains(mouseX,mouseY)):
+        return Micronesia
+    if(SaintLucia.contains(mouseX,mouseY)):
+        return SaintLucia
+    if(Togo.contains(mouseX,mouseY)):
+        return Togo
+    else:
+        return 0
+
+def drawStarsforBosnia():
+    ### draws stars on bosnian flag
+    for i in range(9):
+        stars = Star(280 + i*8.125,170 + i*7.5,6,5,fill = 'white')
+        BosniaAndHerzegovina.add(stars)
+def drawUSflag():
+    ### draws stars for USA
+    for i in range(6):
+        USA.add(Line(151,177.69 + i*8.92,249,177.69 + i*8.92,fill = 'white',
+        lineWidth = 4.46))
+    for i in range(7):
+        USA.add(Line(151,173.23 + i*8.92,249,173.23 + i*8.92,fill = 'red',
+        lineWidth = 4.46))
+        USA.add(Rect(151,171,38,30.23,fill = 'blue'))
+    for i in range(6):
+        for j in range(5):
+            USA.add(Star(154 + 6*i,173.7 + j*6,3,5,fill='white'))
+    for i in range(5):
+        for j in range(4):
+            USA.add(Star(157+6*i,176.7+6*j,3,5,fill = 'white'))
+
+def startTheGame():
+    ### starts the game: you will have to enter the level of difficulty in the 
+    ### messageBox that will appear on your screen
+    levelDifficulty=app.getTextInput('Choose the level (Easy/Medium/Hard)')
+    while ((levelDifficulty != 'Easy') and (levelDifficulty != 'Medium')
+    and levelDifficulty != 'Hard' and app.counter < 10):
+        levelDifficulty=app.getTextInput(
+            'Choose the level (Easy/Medium/Hard)')
+        app.counter += 1
+    if(app.counter > 9):
+        ### if counter is greater than 9, there will appear a label saying that
+        ### you should correctly follow the instructions
+        easy.visible = True
+        easy.value = "You should follow the instructions!"
+        easy.centerY = 200
+        easy.size = 25
+        easy.fill = 'red'
+    if(levelDifficulty == 'Easy'):
+        ### if you entered 'Easy', easy level will be opened
+        openEasyMode()
+        level.append(levelDifficulty)
+        for i in range(len(level)):
+            difficultyLevel.value += level[i]
+    if(levelDifficulty == 'Medium'):
+        ### if you entered 'Medium', medium level will be opened
+        openMediumMode()
+        level.append(levelDifficulty)
+        for i in range(len(level)):
+            difficultyLevel.value += level[i]
+    if(levelDifficulty == 'Hard'): 
+        ### if you entered 'Hard', hard level will be opened
+        openHardMode()
+        level.append(levelDifficulty)
+        for i in range(len(level)):
+            difficultyLevel.value += level[i]
+def openEasyMode():
+    ### moves flags from easyCountries list to the canvas and labels are visible
+    SouthKorea.centerX = 200
+    USA.centerX = 320
+    Russia.centerX = 80
+    Japan.centerX = 200
+    Japan.centerY = 280
+    Ukraine.centerX = 80
+    Brazil.centerX = 320
+    easy.visible = True
+    accuracy.visible = True
+    difficultyLevel.visible =True
+    instructions.visible = False
+    easy.value = choice(easyCountries)
+    
+def openMediumMode():
+    ### moves flags from mediumCountries list to the canvas and labels are 
+    ###visible
+    Denmark.centerX = 200
+    Finland.centerX = 200
+    Finland.centerY = 280
+    Vietnam.centerX = 80
+    Azerbaijan.centerX = 320
+    Armenia.centerX = 80
+    Austria.centerX = 320
+    medium.visible = True
+    accuracy.visible = True
+    difficultyLevel.visible =True
+    instructions.visible = False
+    medium.value = choice(mediumCountries)
+    
+def openHardMode():
+    ### moves flags from hardCountries list to the canvas and labels are visible
+    Bahamas.centerX = 80
+    Bangladesh.centerX = 200
+    BosniaAndHerzegovina.centerX = 320
+    Micronesia.centerX = 80
+    SaintLucia.centerX = 200
+    Togo.centerX = 320
+    hard.visible = True
+    accuracy.visible = True
+    difficultyLevel.visible =True
+    instructions.visible = False
+    hard.value = choice(hardCountries)
+
+# main
+def main():
+    ### calls all the funtions
+    drawStarsforBosnia() 
+    drawUSflag()
+    moveFlagsAway()
+    
+# events
+def onMousePress(mouseX,mouseY):
+    ### Checks if you clicked on the flag that was asked, and if you did so, 
+    ### flag is removed, if not, label will be red. 
+    group = checkTheFlag(mouseX,mouseY)
+    if(group != 0 and easy.visible == True):
+        ### if you didn't click on empty space and level is easy
+        for i in range(len(easyCountries)):
+            ### loops over list of easy countries
+            if (easyCountries[i] == group.label and group.label == easy.value):
+                ### if group label equals to one of the lists values and also 
+                ### equals to the asked country, delete that group
+                easyCountries.pop(i)
+                group.opacity = 0
+                break
+        if(len(easyCountries)>0 and group.label == easy.value):
+            ### if you guessed correctly and there are still countries left,
+            ### change the label to next random value from the list
+            easy.value = choice(easyCountries)
+            easy.fill = 'black'
+            accuracy.correctAnsCounter += 1
+        elif(len(easyCountries)>0 and not group.label == easy.value):
+            ### if you didn't guess correctly and there are countries left,
+            ### make the label red
+            easy.fill = 'red'
+            accuracy.incorrectAnsCounter += 1
+        elif(not len(easyCountries)>0):
+            ### if there are no countries left, you won the game!
+            easy.value = 'You Won!'
+            app.stop()
+            easy.size = 34
+            easy.fill = 'green'
+            easy.centerY = 200
+            accuracy.correctAnsCounter += 1
+    elif(group != 0 and medium.visible == True):
+        ### if you didn't click on empty space and level is medium
+        for j in range(len(mediumCountries)):
+            ### loops over list of medium countries
+            if (mediumCountries[j] == group.label and 
+            group.label == medium.value):
+                ### if group label equals to one of the lists values and also 
+                ### equals to the asked country, delete that group
+                mediumCountries.pop(j)
+                group.opacity = 0
+                break
+        if(len(mediumCountries)>0 and group.label == medium.value):
+            ### if you guessed correctly and there are still countries left,
+            ### change the label to next random value from the list
+            medium.value = choice(mediumCountries)
+            medium.fill = 'black'
+            accuracy.correctAnsCounter += 1
+        elif(len(mediumCountries)>0 and not group.label == medium.value):
+            ### if you didn't guess correctly and there are countries left,
+            ### make the label red
+            medium.fill = 'red'
+            accuracy.incorrectAnsCounter += 1
+        elif(not len(mediumCountries)>0):
+            ### if there are no countries left, you won the game!
+            medium.value = 'You Won!'
+            app.stop()
+            medium.size = 34
+            medium.fill = 'green'
+            medium.centerY = 200
+            accuracy.correctAnsCounter += 1
+    elif(group != 0 and hard.visible == True):
+        ### if you didn't click on empty space and level is hard
+        for j in range(len(hardCountries)):
+            ### loops over list of hard countries
+            if (hardCountries[j] == group.label and group.label == hard.value):
+                ### if group label equals to one of the lists values and also 
+                ### equals to the asked country, delete that group
+                hardCountries.pop(j)
+                group.opacity = 0
+                break
+        if(len(hardCountries)>0 and group.label == hard.value):
+            ### if you guessed correctly and there are still countries left,
+            ### change the label to next random value from the list
+            hard.value = choice(hardCountries)
+            hard.fill = 'black'
+            accuracy.correctAnsCounter += 1
+        elif(len(hardCountries)>0 and not group.label == hard.value):
+            ### if you didn't guess correctly and there are countries left,
+            ### make the label red
+            hard.fill = 'red'
+            accuracy.incorrectAnsCounter += 1
+        elif(not len(hardCountries)>0):
+            ### if there are no countries left, you won the game!
+            app.stop()
+            hard.value = 'You Won!'
+            hard.size = 34
+            hard.fill = 'green'
+            hard.centerY = 200
+            accuracy.correctAnsCounter += 1
+    if((accuracy.correctAnsCounter + accuracy.incorrectAnsCounter) != 0):
+        ### checks if you will not accidently divide by 0 by clicking on empty 
+        ### space
+        accuracy.percent = (accuracy.correctAnsCounter / 
+        (accuracy.correctAnsCounter+ accuracy.incorrectAnsCounter) * 100) // 1
+        accuracy.value = 'Accuracy:' + str(accuracy.percent) + '%'
+
+def onKeyPress(key):
+    ### if you click on 's', the game will be started
+    if(key == 's'):
+        startTheGame()
+
+main()
